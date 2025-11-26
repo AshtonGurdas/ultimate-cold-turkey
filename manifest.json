@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Ultimate Cold Turkey",
+  "version": "2.2",
+  "description": "Insanely strict blocker for adult content with a 3-hour cooldown screen.",
+  "permissions": ["storage", "tabs", "webNavigation", "management"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Ultimate Cold Turkey Settings"
+  },
+  "incognito": "split"
+}
