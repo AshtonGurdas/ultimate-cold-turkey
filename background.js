@@ -27,11 +27,13 @@ function shouldBlock(url) {
     // Domain match
     if (BLOCK_DOMAINS.some(d => host.includes(d))) return true;
 
-    // Keyword match anywhere in URL
-    if (BLOCK_KEYWORDS.some(kw => full.includes(kw))) return true;
+    // Keyword match using word boundaries
+    if (BLOCK_KEYWORDS.some(kw => new RegExp(`\\b${kw}\\b`, "i").test(full))) {
+      return true;
+    }
 
     // Regex match for disguised phrases like "adult film"
-    const disguiseRegex = /(adult\s*(film|movie|clips|video|content))/i;
+    const disguiseRegex = /\badult\s*(film|movie|clips|video|content)\b/i;
     if (disguiseRegex.test(full)) return true;
 
     return false;
@@ -39,6 +41,7 @@ function shouldBlock(url) {
     return false;
   }
 }
+
 
 // Custom blocking function for user-added sites
 function shouldBlockCustom(url) {
