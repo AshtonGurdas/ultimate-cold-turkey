@@ -25,14 +25,9 @@ chrome.storage.local.get(["lastRelapse"], (data) => {
 // Mark relapse trigger
 chrome.storage.local.set({ lastRelapse: new Date().toISOString() });
 
-
 function formatTime(sec) {
-  const h = Math.floor(sec / 3600)
-    .toString()
-    .padStart(2, "0");
-  const m = Math.floor((sec % 3600) / 60)
-    .toString()
-    .padStart(2, "0");
+  const h = Math.floor(sec / 3600).toString().padStart(2, "0");
+  const m = Math.floor((sec % 3600) / 60).toString().padStart(2, "0");
   const s = (sec % 60).toString().padStart(2, "0");
   return `${h}:${m}:${s}`;
 }
@@ -63,7 +58,9 @@ function resetTimer(reason) {
   remaining = TOTAL_SECONDS;
   updateDisplay();
   if (intervalId) clearInterval(intervalId);
+
   startTimer();
+
   if (reason) {
     resetMsgEl.textContent = `Timer reset: ${reason}`;
   } else {
@@ -71,24 +68,22 @@ function resetTimer(reason) {
   }
 }
 
-// If the tab becomes hidden (switching tabs / minimizing / new window), reset.
+// Reset when tab loses visibility (switching tabs / minimizing / new window)
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
     resetTimer("you left the page or switched tabs.");
   }
 });
 
-// If user tries to close or reload the tab, show friction & reset.
-window.addEventListener("beforeunload", (e) => {
+// Reset silently if refresh or close is attempted — removed dialog requirement
+window.addEventListener("beforeunload", () => {
   resetTimer("you tried to close or reload the tab.");
-  e.preventDefault();
-  e.returnValue = "";
 });
 
+// Enable close button once finished
 closeBtn.addEventListener("click", () => {
-  // Only enabled after full cooldown.
   window.close();
 });
 
-// Start immediately on page load.
+// Start timer immediately
 startTimer();
